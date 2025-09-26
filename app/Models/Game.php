@@ -9,4 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Game extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'code',
+    ];
 }

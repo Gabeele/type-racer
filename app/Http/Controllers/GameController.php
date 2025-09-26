@@ -12,13 +12,15 @@ class GameController extends Controller
         return Game::all();
     }
 
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        $data = $request->validate([
-            'code' => ['required'],
-        ]);
 
         return Game::create($data);
+    }
+
+    public function join()
+    {
+
     }
 
     public function show(Game $game)
