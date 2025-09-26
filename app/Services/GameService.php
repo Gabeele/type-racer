@@ -3,18 +3,24 @@
 namespace App\Services;
 
 use App\Models\Game;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 class GameService
 {
+    protected Game $game;
+
     public function __construct()
     {
     }
 
-    public function create(): string
+    public function create(): GameService
     {
         $code = $this->generateCode();
-        return $this->createGame($code);
+
+        $this->game = $this->createGame($code);
+
+        return $this;
     }
 
     private function generateCode(): string
@@ -32,6 +38,18 @@ class GameService
         return Game::create([
             'code' => $code
         ]);
+    }
+
+    public function attachUser(User $user): GameService
+    {
+        $this->game->users()->attach($user);
+
+        return $this;
+    }
+
+    public function getGame(): Game
+    {
+        return $this->game;
     }
 
 

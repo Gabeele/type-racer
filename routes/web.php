@@ -15,8 +15,8 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::post('game', [GameController::class, 'create'])->name('game.create');
-Route::post('game', [GameController::class, 'join'])->name('game.join');
+Route::post('/games/create', [GameController::class, 'create'])->name('games.create');
+Route::post('/games/join', [GameController::class, 'join'])->name('games.join');
 
 
 // TODO Extract this stuff into a controller or service

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Services\GameService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class GameController extends Controller
 {
@@ -12,16 +14,34 @@ class GameController extends Controller
         return Game::all();
     }
 
-    public function create(Request $request)
+    public function create(GameService $gameService)
     {
+        $game = $gameService
+            ->create()
+            ->attachUser(auth()->user())
+            ->getGame();
 
-        return Game::create($data);
+        return Inertia::render('Game/Lobby', ['game' => $game, 'players' => $game->users()->get()]);
     }
 
-    public function join()
+    // TODO extract out
+    public function join(Request $request, GameService $gameService)
     {
+        $data = $request->validate([
+            'code' => ['required', 'string'],
+        ]);
 
+        $game = Game::where('code', $data['code'])->firstOrFail();
+
+        $gameService
+            ->attachUser($game, auth()->user());
+
+        return Inertia::render('Game/Lobby', [
+            'game' => $game,
+            'players' => $game->users()->get(),
+        ]);
     }
+
 
     public function show(Game $game)
     {

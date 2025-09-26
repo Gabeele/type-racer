@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Services\GameService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +19,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-            GameService::class
     }
 }

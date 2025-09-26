@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -15,14 +15,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 const joinCode = ref('');
 
 const createGame = () => {
-    // TODO: Replace with route call or inertia post
-    console.log('Create game clicked');
+    router.post('/games/create');
 };
 
 const joinGame = () => {
     if (!joinCode.value) return;
-    // TODO: Replace with route call or inertia post
-    console.log('Joining game with code:', joinCode.value);
+    router.post('/games/join', { code: joinCode.value });
 };
 </script>
 

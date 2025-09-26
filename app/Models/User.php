@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -37,6 +38,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function games(): BelongsToMany
+    {
+        return $this->belongsToMany(Game::class, 'game_user', 'user_id', 'game_id');
+    }
 
     /**
      * Get the attributes that should be cast.
