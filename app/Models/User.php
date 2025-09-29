@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable
@@ -38,6 +39,17 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected $appends = [
+        'avatar',
+    ];
+
+    public function getAvatarAttribute()
+    {
+        return Cache::remember("avatar-$this->id", 3600, function () {
+            return config('services.github.avatar_url') . $this->github_id;
+        });
+    }
 
     public function games(): BelongsToMany
     {

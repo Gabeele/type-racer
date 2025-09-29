@@ -40,6 +40,7 @@ Route::get('/auth/github/callback', function () {
 
     Auth::login($user);
 
+
     return redirect('/dashboard');
 });
 
