@@ -1,10 +1,9 @@
 <?php
 
 use App\Http\Controllers\GameController;
-use App\Models\User;
+use App\Http\Controllers\GithubAuthenticationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Laravel\Socialite\Facades\Socialite;
 
 
 Route::get('/', function () {
@@ -19,31 +18,8 @@ Route::post('/games/create', [GameController::class, 'create'])->name('games.cre
 Route::post('/games/join', [GameController::class, 'join'])->name('games.join');
 Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
 
-
-// TODO Extract this stuff into a controller or service
-Route::get('/auth/github/redirect', function () {
-    return Socialite::driver('github')->redirect();
-});
-
-Route::get('/auth/github/callback', function () {
-    $githubUser = Socialite::driver('github')->user();
-
-    $user = User::updateOrCreate(
-        ['github_id' => $githubUser->id],
-        [
-            'name' => $githubUser->name ?? $githubUser->nickname,
-            'email' => $githubUser->email,
-            'github_token' => $githubUser->token,
-            'github_refresh_token' => $githubUser->refreshToken ?? null,
-            'password' => null,
-        ]
-    );
-
-    Auth::login($user);
-
-
-    return redirect('/dashboard');
-});
+Route::get('/auth/github/redirect', [GithubAuthenticationController::class, 'redirect']);
+Route::get('/auth/github/callback', [GithubAuthenticationController::class, 'callback']);
 
 
 require __DIR__ . '/settings.php';
