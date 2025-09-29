@@ -23,7 +23,6 @@ class GameControllerTest extends TestCase
 
         $game = Game::factory()->create();
 
-        // Mock GameService chain: create()->attachUser()->getGame()
         $service = Mockery::mock(GameService::class);
         $service->shouldReceive('create')->once()->andReturnSelf();
         $service->shouldReceive('attachUser')->once()->with($user)->andReturnSelf();
