@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\GameStatus;
 use App\Models\Game;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -36,7 +37,8 @@ class GameService
     private function createGame(string $code): Game
     {
         return Game::create([
-            'code' => $code
+            'code' => $code,
+            'status' => GameStatus::LOBBY,
         ]);
     }
 

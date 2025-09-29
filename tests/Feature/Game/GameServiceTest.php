@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\GameStatus;
 use App\Models\Game;
 use App\Models\User;
 use App\Services\GameService;
@@ -32,6 +33,7 @@ class GameServiceTest extends TestCase
         $this->assertDatabaseHas('games', [
             'id' => $game->id,
             'code' => $game->code,
+            'status' => GameStatus::LOBBY,
         ]);
     }
 

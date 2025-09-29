@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\GameStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -13,11 +14,18 @@ class Game extends Model
 
     protected $fillable = [
         'code',
+        'status'
     ];
 
-    public function
-    users(): BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'game_user', 'game_id', 'user_id');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'status' => GameStatus::class,
+        ];
     }
 }
