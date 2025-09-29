@@ -17,6 +17,7 @@ Route::get('dashboard', function () {
 
 Route::post('/games/create', [GameController::class, 'create'])->name('games.create');
 Route::post('/games/join', [GameController::class, 'join'])->name('games.join');
+Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
 
 
 // TODO Extract this stuff into a controller or service

@@ -26,12 +26,13 @@ defineProps<{
                         :key="player.id"
                         class="rounded bg-gray-100 px-3 py-2 text-black"
                     >
-                        <span>
+                        <span class="flex items-center gap-2">
                             <img
+                                :src="player.avatar"
                                 alt="Player Avatar"
-                                src="{{ player.avatar }}"
+                                class="inline-block h-15 w-15 rounded-full"
                             />
-                            {{ player.name }}
+                            <span class="font-bold">{{ player.name }}</span>
                         </span>
                     </li>
                 </ul>

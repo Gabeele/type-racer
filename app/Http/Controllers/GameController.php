@@ -21,7 +21,7 @@ class GameController extends Controller
             ->attachUser(auth()->user())
             ->getGame();
 
-        return Inertia::render('Game/Lobby', ['game' => $game, 'players' => $game->users()->get()]);
+        return redirect()->route('games.show', $game);
     }
 
     // TODO extract out
@@ -34,18 +34,15 @@ class GameController extends Controller
         $game = Game::where('code', $data['code'])->firstOrFail();
 
         $gameService
-            ->attachUser($game, auth()->user());
+            ->attachUser(auth()->user());
 
-        return Inertia::render('Game/Lobby', [
-            'game' => $game,
-            'players' => $game->users()->get(),
-        ]);
+        return redirect()->route('games.show', $game);
     }
 
 
     public function show(Game $game)
     {
-        return $game;
+        return Inertia::render('Game/Lobby', ['game' => $game, 'players' => $game->users()->get()]);
     }
 
     public function update(Request $request, Game $game)
