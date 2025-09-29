@@ -14,9 +14,14 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::post('/games/create', [GameController::class, 'create'])->name('games.create');
-Route::post('/games/join', [GameController::class, 'join'])->name('games.join');
-Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
+Route::name('games.')
+    ->prefix('games')
+    ->middleware(['auth', 'verified'])
+    ->group(function () {
+        Route::post('/create', [GameController::class, 'create'])->name('create');
+        Route::post('/join', [GameController::class, 'join'])->name('join');
+        Route::get('/{game}', [GameController::class, 'show'])->name('show');
+    });
 
 Route::get('/auth/github/redirect', [GithubAuthenticationController::class, 'redirect']);
 Route::get('/auth/github/callback', [GithubAuthenticationController::class, 'callback']);
