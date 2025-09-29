@@ -44,22 +44,4 @@ class GameController extends Controller
     {
         return Inertia::render('Game/Lobby', ['game' => $game, 'players' => $game->users()->get()]);
     }
-
-    public function update(Request $request, Game $game)
-    {
-        $data = $request->validate([
-            'code' => ['required'],
-        ]);
-
-        $game->update($data);
-
-        return $game;
-    }
-
-    public function destroy(Game $game)
-    {
-        $game->delete();
-
-        return response()->json();
-    }
 }
