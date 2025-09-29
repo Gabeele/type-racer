@@ -23,8 +23,11 @@ Route::name('games.')
         Route::get('/{game}', [GameController::class, 'show'])->name('show');
     });
 
-Route::get('/auth/github/redirect', [GithubAuthenticationController::class, 'redirect']);
-Route::get('/auth/github/callback', [GithubAuthenticationController::class, 'callback']);
+Route::name('auth.')
+    ->group(function () {
+        Route::get('/auth/github/redirect', [GithubAuthenticationController::class, 'redirect'])->name('redirect');
+        Route::get('/auth/github/callback', [GithubAuthenticationController::class, 'callback'])->name('callback');
+    });
 
 
 require __DIR__ . '/settings.php';
