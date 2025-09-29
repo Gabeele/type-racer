@@ -2,19 +2,28 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\GameController;
+use App\Enums\GameStatus;
 use App\Models\Game;
 use App\Models\User;
 use App\Services\GameService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia as Assert;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class GameControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+
+    public static function conflictGameStatuses(): array
+    {
+        return [
+            [GameStatus::PLAYING, 'Game is already started!'],
+            [GameStatus::ENDED, 'Game has ended.']
+        ];
+    }
 
     public function test_create_uses_game_service_and_redirects_to_show()
     {
@@ -87,22 +96,35 @@ class GameControllerTest extends TestCase
             );
     }
 
-    protected function setUp(): void
+    public function test_game_status_is_updated_to_playing()
     {
-        parent::setUp();
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
-        // Ensure basic routes exist; adjust if your routes differ.
-        if (!Route::has('games.index')) {
-            Route::get('/games', [GameController::class, 'index'])->name('games.index');
-        }
-        if (!Route::has('games.create')) {
-            Route::post('/games', [GameController::class, 'create'])->name('games.create');
-        }
-        if (!Route::has('games.join')) {
-            Route::post('/games/join', [GameController::class, 'join'])->name('games.join');
-        }
-        if (!Route::has('games.show')) {
-            Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
-        }
+        $game = Game::factory()->create(['status' => GameStatus::LOBBY]);
+
+        $this->get(route('games.start', $game))
+            ->assertOk()
+            ->assertJson(['game' => $game->refresh()->toArray()]);
+
+        $this->assertTrue($game->status === GameStatus::PLAYING);
+        $this->assertDatabaseHas('games', [
+            'id' => $game->id,
+            'status' => GameStatus::PLAYING
+        ]);
     }
+
+    #[DataProvider('conflictGameStatuses')]
+    public function test_prevent_game_status_update_if_not_lobby(GameStatus $status, string $message)
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $game = Game::factory()->create(['status' => $status]);
+
+        $this->get(route('games.start', $game))
+            ->assertConflict()
+            ->assertJson(['message' => $message]);
+    }
+
 }

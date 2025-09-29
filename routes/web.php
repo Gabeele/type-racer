@@ -20,6 +20,7 @@ Route::name('games.')
     ->group(function () {
         Route::post('/create', [GameController::class, 'create'])->name('create');
         Route::post('/join', [GameController::class, 'join'])->name('join');
+        Route::get('/{game}/start', [GameController::class, 'start'])->name('start');
         Route::get('/{game}', [GameController::class, 'show'])->name('show');
     });
 

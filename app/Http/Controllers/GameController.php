@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GameStatus;
 use App\Models\Game;
 use App\Services\GameService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 class GameController extends Controller
 {
@@ -43,5 +45,18 @@ class GameController extends Controller
     public function show(Game $game)
     {
         return Inertia::render('Game/Lobby', ['game' => $game, 'players' => $game->users()->get()]);
+    }
+
+    public function start(Game $game)
+    {
+        if ($game->status === GameStatus::PLAYING) {
+            return response()->json(['message' => 'Game is already started!'], Response::HTTP_CONFLICT);
+        } else if ($game->status === GameStatus::ENDED) {
+            return response()->json(['message' => 'Game has ended.'], Response::HTTP_CONFLICT);
+        }
+
+        $game->update(['status' => GameStatus::PLAYING]);
+
+        return response()->json(['game' => $game]);
     }
 }
